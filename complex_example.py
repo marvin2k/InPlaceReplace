@@ -11,7 +11,8 @@ import sys
 workingBranch = 'temp'
 
 # where to check changes in
-gitRepo = '/home/mzenzes/InPlaceReplace'
+#gitRepo = '/home/mzenzes/InPlaceReplace'
+gitRepo = '/home/mzenzes/iStruct/software.git'
 
 
 # helper function
@@ -48,7 +49,7 @@ def process_unit(json_entry, oldname, newname):
     # print 'args ' + str(len(flags))
 
     try:
-        changed_files = replace_namespace(filename, oldname, newname, "namespace", flags)
+        changed_files = replace_namespace(filename, oldname, newname, "variable", flags)
     except IndexError as clang_diagnostic:
         print 'exception: ' + str(clang_diagnostic)
         return

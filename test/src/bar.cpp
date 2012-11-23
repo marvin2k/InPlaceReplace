@@ -7,7 +7,7 @@ Bar::Bar(test::Person* parent) :
     Person(),
     mParent(parent)
 {
-    test.mFloat = 7;
+    test.mFloater = 7;
 }
 
 int foo::Bar::getVar(int mVar)

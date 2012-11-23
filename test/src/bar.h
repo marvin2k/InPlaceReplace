@@ -6,7 +6,7 @@
 struct blupp
 {
     int bla;
-    float mFloat;
+    float mFloater;
     int mmm;
 };
 
