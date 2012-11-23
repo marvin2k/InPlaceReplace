@@ -91,6 +91,9 @@ def main():
         if filename.find('moc_')==0:
             print 'skipping moc ' + filename
             continue
+        if filename.find('qrc_')==0:
+            print 'skipping qrc ' + filename
+            continue
 
         process_unit(entry, oldname, newname)
         print 'translation unit ' + filename + ' finished'
