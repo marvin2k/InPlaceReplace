@@ -7,5 +7,6 @@ Bar::Bar(test::Person* parent) :
     Person(),
     mParent(parent)
 {
+    test.mFloat = 7;
 }
 
