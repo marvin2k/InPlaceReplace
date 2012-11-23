@@ -85,6 +85,9 @@ def replace_namespace(filename, oldname, newname, task, flags = []):
         if str(str(loc[0]).split('/')[-1]).find('ui_')==0: 
             print 'skipping ui ' + str(str(loc[0]).split('/')[-1])
             continue
+        if re.match("/usr/include",str(loc[0])):
+            print 'skipping system header ' + str(loc[0])
+            continue
 
         print 'working in %s:[%i,%i] with %s ' % (
                 loc[0], loc[1], loc[2], loc[3])
@@ -118,7 +121,7 @@ def replace_namespace(filename, oldname, newname, task, flags = []):
                 # same line
                 if (int(temp[1]) == int(loc[1])):
                     # but different column
-                    if (int(temp[2]) != int(loc[2])):
+                    if (int(temp[2]) > int(loc[2])):
                         # and adopt start index to changed string
                         locs[i][2] = temp[2] + len(_newname)-len(_oldname)
                         # print 'changed line ' + str(temp[1]) + ' col ' + str(temp[2]) + ' to ' + str(locs[i][2]) + ' in file ' + str(temp[0])
