@@ -17,3 +17,7 @@ void test::Person::get_name()
 {
 }
 
+int test::Person::getVar(int mVar)
+{
+    return mVar*6;
+}

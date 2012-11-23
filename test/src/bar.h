@@ -14,7 +14,10 @@ namespace foo
 {
     class Bar : public test::Person
     {
+        public:
             Bar(test::Person* parent);
+            virtual int getVar(int mVar);
+
         private:
             test::Person* mParent;
             int mBase;

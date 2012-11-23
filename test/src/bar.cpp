@@ -10,3 +10,8 @@ Bar::Bar(test::Person* parent) :
     test.mFloat = 7;
 }
 
+int foo::Bar::getVar(int mVar)
+{
+    return mVar*7;
+}
+

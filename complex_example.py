@@ -10,6 +10,9 @@ import sys
 #
 workingBranch = 'temp'
 
+# where to check changes in
+gitRepo = '/home/mzenzes/InPlaceReplace'
+
 
 # helper function
 def gitAdd(fileName, repoDir):
@@ -24,7 +27,7 @@ def gitBranch(branchName, repoDir):
     return p.wait()
 
 def gitCheckout(branchName, repoDir):
-    cmd = ['git', 'checkout', branchName]
+    cmd = ['git', 'checkout', '-B', branchName]
     p = subprocess.Popen(cmd, cwd=repoDir)
     return p.wait()
 
@@ -59,11 +62,11 @@ def process_unit(json_entry, oldname, newname):
 
         for entry in changed_files_unique:
             # print 'gitAdd ' + str(entry)
-            gitAdd(str(entry),'/home/mzenzes/iStruct/iStruct.git')
+            gitAdd(str(entry),gitRepo)
 
-        gitCheckout(workingBranch,'/home/mzenzes/iStruct/iStruct.git')
-        gitCommit_m('[InPlaceReplace] ' + filename + '\n\nautochanged namespace '+oldname+' to '+newname+' in '+filename,'/home/mzenzes/iStruct/iStruct.git')
-        gitCheckout('private','/home/mzenzes/iStruct/iStruct.git')
+        gitCheckout(workingBranch,gitRepo)
+        gitCommit_m('[InPlaceReplace] ' + filename + '\n\nautochanged namespace '+oldname+' to '+newname+' in '+filename, gitRepo)
+        gitCheckout('private',gitRepo)
 
 # usage
 #
@@ -80,10 +83,8 @@ def main():
 
     commands = json.loads(open(json_file).read());
 
-    r = gitCheckout(workingBranch,'/home/mzenzes/iStruct/iStruct.git')
-    if r:
-        gitBranch(workingBranch,'/home/mzenzes/iStruct/iStruct.git')
-        gitCheckout(workingBranch,'/home/mzenzes/iStruct/iStruct.git')
+    gitCheckout('private',gitRepo)
+    gitCheckout(workingBranch,gitRepo)
 
     for entry in commands:
         # skip moc files:
