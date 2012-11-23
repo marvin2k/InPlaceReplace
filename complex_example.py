@@ -48,7 +48,7 @@ def process_unit(json_entry, oldname, newname):
     # print 'args ' + str(len(flags))
 
     try:
-        changed_files = replace_namespace(filename, oldname, newname, flags)
+        changed_files = replace_namespace(filename, oldname, newname, "namespace", flags)
     except IndexError as clang_diagnostic:
         print 'exception: ' + str(clang_diagnostic)
         return

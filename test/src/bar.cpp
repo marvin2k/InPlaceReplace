@@ -12,6 +12,8 @@ Bar::Bar(test::Person* parent) :
 
 int foo::Bar::getVar(int mVar)
 {
+    static int myIntmVar;
+
     return mVar*7;
 }
 
