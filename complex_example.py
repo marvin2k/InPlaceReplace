@@ -27,7 +27,7 @@ def gitBranch(branchName, repoDir):
     return p.wait()
 
 def gitCheckout(branchName, repoDir):
-    cmd = ['git', 'checkout', '-B', branchName]
+    cmd = ['git', 'checkout', branchName]
     p = subprocess.Popen(cmd, cwd=repoDir)
     return p.wait()
 
@@ -83,7 +83,8 @@ def main():
 
     commands = json.loads(open(json_file).read());
 
-    gitCheckout('private',gitRepo)
+    gitBranch('private',gitRepo)
+    gitBranch(workingBranch,gitRepo)
     gitCheckout(workingBranch,gitRepo)
 
     for entry in commands:
