@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/Tooling/CompilationDatabase.h"
@@ -16,19 +17,34 @@ cl::list<std::string> SourcePaths(cl::Positional, cl::desc("<source0> [... <sour
 
 class ClassRenamer : public MatchFinder::MatchCallback
 {
-        Replacements *Replace;
+    Replacements *Replace;
     public:
-        ClassRenamer(Replacements *_Replace) : Replace(_Replace) {}
-        virtual void run(const MatchFinder::MatchResult &Result)
+    ClassRenamer(Replacements *_Replace) : Replace(_Replace) {}
+    virtual void run(const MatchFinder::MatchResult &Result)
+    {
         {
-            const CXXMethodDecl *D = Result.Nodes.getDeclAs<CXXMethodDecl>("method");
-            if (!D)
-                return;
-            Replace->insert(Replacement(
-                        *Result.SourceManager,
-                        CharSourceRange::getTokenRange(
-                            SourceRange(D->getLocation())),
-                        "bla"));
+            const Decl *D = Result.Nodes.getNodeAs<Decl>("first");
+            if (D) {
+                std::cout << "got smth " << D->getLocation().printToString(*Result.SourceManager) << "\n";
+                Replace->insert(Replacement(
+                            *Result.SourceManager,
+                            CharSourceRange::getTokenRange(
+                                SourceRange(D->getLocation())),
+                            "first"));
+            }
+        }
+
+            {
+                const Expr *D = Result.Nodes.getNodeAs<Expr>("second");
+                if (D) {
+                    std::cout << "got smth " << D->getExprLoc().printToString(*Result.SourceManager) << "\n";
+                    Replace->insert(Replacement(
+                                *Result.SourceManager,
+                                CharSourceRange::getTokenRange(
+                                    SourceRange(D->getExprLoc())),
+                                "second"));
+                }
+            }
         }
 };
 
@@ -48,7 +64,17 @@ int main(int argc, char **argv)
 
     MatchFinder Finder;
     ClassRenamer CallCallback(&Tool.getReplacements());
-    Finder.addMatcher(id("class",methodDecl(hasName("Bar"))), &CallCallback);
+    // works but find two matches, one too much... the "int mBase" which is another one
+        Finder.addMatcher(
+            id("first",decl(fieldDecl(hasName("mBase"),has(hasType(recordDecl(hasName("blabla")))))))),
+            &CallCallback
+            );
+    // kinda works, one too many aswell... the "struct blupp" declaration...
+        Finder.addMatcher(
+            id("second",expr(hasType(recordDecl(hasName("repretest::blabla"))))),
+            &CallCallback
+            );
+
 
     return Tool.run(newFrontendActionFactory(&Finder));
 }
