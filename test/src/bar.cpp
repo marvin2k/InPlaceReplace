@@ -12,8 +12,11 @@ Bar::Bar(test::Person* parent) :
 
 int foo::Bar::getVar(int mVar)
 {
-    static int myIntmVar;
+    static int myIntmVar = 0;
 
-    return mVar*7;
+    int notUsed = test.mBase.mId + test.mBase.mTime;
+    notUsed++;
+
+    return myIntmVar + mVar*7;
 }
 

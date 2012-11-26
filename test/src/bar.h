@@ -3,12 +3,23 @@
 
 #include "dummy.h"
 
-struct blupp
+namespace repretest
 {
-    int bla;
-    float mFloater;
-    int mmm;
-};
+    struct blabla
+    {
+        int mId;
+        int mTime;
+    };
+
+    struct blupp
+    {
+        struct blabla mBase;
+
+        int bla;
+        float mFloater;
+        int mmm;
+    };
+}
 
 namespace foo
 {
@@ -22,7 +33,9 @@ namespace foo
             test::Person* mParent;
             int mBase;
 
-            struct blupp test;
+            int getId() { return test.mBase.mId; };
+
+            struct repretest::blupp test;
     };
 }
 
