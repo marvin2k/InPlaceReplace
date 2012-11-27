@@ -1,5 +1,7 @@
 #include <iostream>
 
+// http://clang.llvm.org/docs/LibASTMatchersReference.html
+
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/Tooling/CompilationDatabase.h"
@@ -25,24 +27,24 @@ class ClassRenamer : public MatchFinder::MatchCallback
         {
             const Decl *D = Result.Nodes.getNodeAs<Decl>("first");
             if (D) {
-                std::cout << "got smth " << D->getLocation().printToString(*Result.SourceManager) << "\n";
-                Replace->insert(Replacement(
-                            *Result.SourceManager,
-                            CharSourceRange::getTokenRange(
-                                SourceRange(D->getLocation())),
-                            "first"));
+                std::cout << "got first " << D->getLocation().printToString(*Result.SourceManager) << "\n";
+                /* Replace->insert(Replacement( */
+                /*             *Result.SourceManager, */
+                /*             CharSourceRange::getTokenRange( */
+                /*                 SourceRange(D->getLocation())), */
+                /*             "first")); */
             }
         }
 
             {
                 const Expr *D = Result.Nodes.getNodeAs<Expr>("second");
                 if (D) {
-                    std::cout << "got smth " << D->getExprLoc().printToString(*Result.SourceManager) << "\n";
-                    Replace->insert(Replacement(
-                                *Result.SourceManager,
-                                CharSourceRange::getTokenRange(
-                                    SourceRange(D->getExprLoc())),
-                                "second"));
+                    std::cout << "got second " << D->getExprLoc().printToString(*Result.SourceManager) << "\n";
+                    /* Replace->insert(Replacement( */
+                    /*             *Result.SourceManager, */
+                    /*             CharSourceRange::getTokenRange( */
+                    /*                 SourceRange(D->getExprLoc())), */
+                    /*             "second")); */
                 }
             }
         }
@@ -64,9 +66,10 @@ int main(int argc, char **argv)
 
     MatchFinder Finder;
     ClassRenamer CallCallback(&Tool.getReplacements());
+    // wanna have the one and only declaration of the "struct blabla" named mBase
     // works but find two matches, one too much... the "int mBase" which is another one
         Finder.addMatcher(
-            id("first",decl(fieldDecl(hasName("mBase"),has(hasType(recordDecl(hasName("blabla")))))))),
+            id("first",decl(fieldDecl(hasName("mBase")),recordDecl(hasName("repretest::blabla")))),
             &CallCallback
             );
     // kinda works, one too many aswell... the "struct blupp" declaration...
