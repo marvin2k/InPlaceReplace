@@ -25,26 +25,26 @@ class ClassRenamer : public MatchFinder::MatchCallback
     virtual void run(const MatchFinder::MatchResult &Result)
     {
         {
-            const Decl *D = Result.Nodes.getNodeAs<Decl>("first");
+            const Decl *D = Result.Nodes.getNodeAs<Decl>("declaration");
             if (D) {
-                std::cout << "got first " << D->getLocation().printToString(*Result.SourceManager) << "\n";
+                std::cout << "got declaration " << D->getLocation().printToString(*Result.SourceManager) << "\n";
                 /* Replace->insert(Replacement( */
                 /*             *Result.SourceManager, */
                 /*             CharSourceRange::getTokenRange( */
                 /*                 SourceRange(D->getLocation())), */
-                /*             "first")); */
+                /*             "declaration")); */
             }
         }
 
             {
-                const Expr *D = Result.Nodes.getNodeAs<Expr>("second");
+                const Expr *D = Result.Nodes.getNodeAs<Expr>("usage");
                 if (D) {
-                    std::cout << "got second " << D->getExprLoc().printToString(*Result.SourceManager) << "\n";
+                    std::cout << "got usage " << D->getExprLoc().printToString(*Result.SourceManager) << "\n";
                     /* Replace->insert(Replacement( */
                     /*             *Result.SourceManager, */
                     /*             CharSourceRange::getTokenRange( */
                     /*                 SourceRange(D->getExprLoc())), */
-                    /*             "second")); */
+                    /*             "usage")); */
                 }
             }
         }
@@ -66,15 +66,22 @@ int main(int argc, char **argv)
 
     MatchFinder Finder;
     ClassRenamer CallCallback(&Tool.getReplacements());
-    // wanna have the one and only declaration of the "struct blabla" named mBase
-    // works but find two matches, one too much... the "int mBase" which is another one
+    // wanna have "the one and only" declaration of the "struct blabla" named mBase, anywhere, no
+    // matter where...
         Finder.addMatcher(
-            id("first",decl(fieldDecl(hasName("mBase")),recordDecl(hasName("repretest::blabla")))),
+            id("declaration",decl(
+                    fieldDecl(hasName("mBase")),
+                    fieldDecl(hasType(recordDecl(hasName("blabla"))))
+                    )
+                ),
             &CallCallback
             );
+    // wanna have each usage of the "mBase" string, if its of the "struct blabla"
     // kinda works, one too many aswell... the "struct blupp" declaration...
         Finder.addMatcher(
-            id("second",expr(hasType(recordDecl(hasName("repretest::blabla"))))),
+            id("usage",expr(
+                    hasType(recordDecl(hasName("repretest::blabla"))))
+                ),
             &CallCallback
             );
 

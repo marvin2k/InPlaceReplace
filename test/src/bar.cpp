@@ -16,6 +16,7 @@ int foo::Bar::getVar(int mVar)
 
     int notUsed = test.mBase.mId + test.mBase.mTime;
     notUsed++;
+    mBase++;
 
     return myIntmVar + mVar*7;
 }
