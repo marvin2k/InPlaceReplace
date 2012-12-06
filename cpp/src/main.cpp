@@ -37,7 +37,7 @@ class ClassRenamer : public MatchFinder::MatchCallback
         }
 
         {
-            const DeclRefExpr *D = Result.Nodes.getNodeAs<DeclRefExpr>("reference");
+            const MemberExpr *D = Result.Nodes.getNodeAs<MemberExpr>("reference");
             if (D) {
                 std::cout << "got reference " << D->getLocStart().printToString(*Result.SourceManager) << "\n";
                 /* Replace->insert(Replacement( */
