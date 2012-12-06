@@ -27,6 +27,8 @@ namespace plotz
     };
 }
 
+static struct plotz::planet mars;
+
 namespace foo
 {
     /* this class uses the struct-chain, where we have to rename stuff */

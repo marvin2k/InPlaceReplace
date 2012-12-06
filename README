@@ -1,0 +1,24 @@
+simple test-code to play around with clangs tooling
+
+tough stuff, i don't understand it, but it seems to work...
+
+there are two cmake-based dirs (test and cpp) which can be coordinated by a simple
+makefile here in this dir. just to:
+
+{{{
+    make execute
+}}}
+
+to do the compete chain:
+
+1) compiling the InPlaceReplace and test-application (compiling the second is
+   needed because of the compile_commands.json)
+2) running it to replace some code
+3) display the git diff...
+
+also, the following two are nice time-safers:
+
+{{{
+    make restore            # git-cleaning the testdir
+    make clean          # git-cleaning the testdir and removing all build dirs
+}}}

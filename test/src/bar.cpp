@@ -17,6 +17,8 @@ int foo::Bar::getSkyColor(int param)
     /* a variable called oak, but no to be matched */
     const char* oak = "fooled you";
 
+    mars.oak.bird = 1;
+
     return notUsed;
 }
 

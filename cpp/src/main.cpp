@@ -28,30 +28,28 @@ class ClassRenamer : public MatchFinder::MatchCallback
             const Decl *D = Result.Nodes.getNodeAs<Decl>("declaration");
             if (D) {
                     std::cout << "got declaration "
-                              << D->getLocStart().printToString(*Result.SourceManager) << " to "
-                              << D->getLocEnd().printToString(*Result.SourceManager) << "\n";
-                /* Replace->insert(Replacement( */
-                /*             *Result.SourceManager, */
-                /*             CharSourceRange::getTokenRange( */
-                /*                 SourceRange(D->getLocation())), */
-                /*             "declaration")); */
+                              << D->getLocation().printToString(*Result.SourceManager) << "\n";
+                Replace->insert(Replacement(
+                            *Result.SourceManager,
+                            CharSourceRange::getTokenRange(
+                                SourceRange(D->getLocation())),
+                            "pappel"));// this is the string which gets actually inserted
             }
         }
 
-            {
-                const MemberExpr *D = Result.Nodes.getNodeAs<MemberExpr>("reference");
-                if (D) {
-                    std::cout << "got reference "
-                              << D->getLocStart().printToString(*Result.SourceManager) << " to "
-                              << D->getLocEnd().printToString(*Result.SourceManager) << "\n";
-                    /* Replace->insert(Replacement( */
-                    /*             *Result.SourceManager, */
-                    /*             CharSourceRange::getTokenRange( */
-                    /*                 SourceRange(D->getExprLoc())), */
-                    /*             "usage")); */
-                }
+        {
+            const MemberExpr *D = Result.Nodes.getNodeAs<MemberExpr>("reference");
+            if (D) {
+                std::cout << "got reference "
+                    << D->getLocStart().printToString(*Result.SourceManager) << "\n";
+                Replace->insert(Replacement(
+                            *Result.SourceManager,
+                            CharSourceRange::getTokenRange(
+                                SourceRange(D->getExprLoc())),
+                            "pappel"));// this is the string which gets actually inserted
             }
         }
+    }
 };
 
 
@@ -67,16 +65,16 @@ int main(int argc, char **argv)
 
     RefactoringTool Tool(*Compilations, SourcePaths);
 
-
-    DeclarationMatcher matcher = fieldDecl(hasName("oak"), hasType(recordDecl(hasName("tree"))));
+    // a matcher to find a thing of type "tree" named "oak"
+    DeclarationMatcher matcher = fieldDecl(hasName("oak"), hasType(recordDecl(hasName("plotz::tree"))));
 
     MatchFinder Finder;
     ClassRenamer CallCallback(&Tool.getReplacements());
-    // wanna have "the one and only" declaration of the "struct blabla" named mBase, anywhere, no
-    // matter where...
+    // wanna have "the one and only" declaration of out matcher
     Finder.addMatcher(fieldDecl(matcher).bind("declaration"),
             &CallCallback
             );
+    // and also we wanna have all member-expressions where this one is used (?)
     Finder.addMatcher(
             memberExpr(member(matcher)).bind("reference"),
             &CallCallback
