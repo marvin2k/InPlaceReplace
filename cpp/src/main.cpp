@@ -27,7 +27,9 @@ class ClassRenamer : public MatchFinder::MatchCallback
         {
             const Decl *D = Result.Nodes.getNodeAs<Decl>("declaration");
             if (D) {
-                std::cout << "got declaration " << D->getLocation().printToString(*Result.SourceManager) << "\n";
+                    std::cout << "got declaration "
+                              << D->getLocStart().printToString(*Result.SourceManager) << " to "
+                              << D->getLocEnd().printToString(*Result.SourceManager) << "\n";
                 /* Replace->insert(Replacement( */
                 /*             *Result.SourceManager, */
                 /*             CharSourceRange::getTokenRange( */
@@ -39,7 +41,9 @@ class ClassRenamer : public MatchFinder::MatchCallback
             {
                 const MemberExpr *D = Result.Nodes.getNodeAs<MemberExpr>("reference");
                 if (D) {
-                    std::cout << "got reference " << D->getLocStart().printToString(*Result.SourceManager) << "\n";
+                    std::cout << "got reference "
+                              << D->getLocStart().printToString(*Result.SourceManager) << " to "
+                              << D->getLocEnd().printToString(*Result.SourceManager) << "\n";
                     /* Replace->insert(Replacement( */
                     /*             *Result.SourceManager, */
                     /*             CharSourceRange::getTokenRange( */
@@ -64,7 +68,7 @@ int main(int argc, char **argv)
     RefactoringTool Tool(*Compilations, SourcePaths);
 
 
-    DeclarationMatcher matcher = fieldDecl(hasName("mBase"), hasType(recordDecl(hasName("blabla"))));
+    DeclarationMatcher matcher = fieldDecl(hasName("oak"), hasType(recordDecl(hasName("tree"))));
 
     MatchFinder Finder;
     ClassRenamer CallCallback(&Tool.getReplacements());
@@ -73,7 +77,8 @@ int main(int argc, char **argv)
     Finder.addMatcher(fieldDecl(matcher).bind("declaration"),
             &CallCallback
             );
-    Finder.addMatcher(memberExpr(member(matcher)).bind("reference"),
+    Finder.addMatcher(
+            memberExpr(member(matcher)).bind("reference"),
             &CallCallback
             );
 

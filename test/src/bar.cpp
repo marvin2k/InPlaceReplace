@@ -3,21 +3,20 @@
 using foo::Bar;
 using test::Person;
 
-Bar::Bar(test::Person* parent) :
-    Person(),
-    mParent(parent)
+Bar::Bar()
 {
-    test.mFloater = 7;
+    /* another place where the "oak" string should be found */
+    earth.oak.trunk = -1;
 }
 
-int foo::Bar::getVar(int mVar)
+int foo::Bar::getSkyColor(int param)
 {
-    static int myIntmVar = 0;
+    /* really hard: two times in one line */
+    int notUsed = earth.oak.leaf + earth.oak.trunk;
 
-    int notUsed = test.mBase.mId + test.mBase.mTime;
-    notUsed++;
-    mBase++;
+    /* a variable called oak, but no to be matched */
+    const char* oak = "fooled you";
 
-    return myIntmVar + mVar*7;
+    return notUsed;
 }
 

@@ -3,39 +3,47 @@
 
 #include "dummy.h"
 
-namespace repretest
+/* using namespaces just to avaid a too simple case */
+namespace plotz
 {
-    struct blabla
+    /* this is the actual struct we will deal with */
+    struct tree
     {
-        int mId;
-        int mTime;
+        int leaf;
+        int trunk;
+        double bird;
     };
 
-    struct blupp
+    /* defines one of this structs */
+    struct planet
     {
-        struct blabla mBase;
+        /* here, we wanna rename "oak" */
+        struct tree oak;
 
-        int bla;
-        float mFloater;
-        int mmm;
+        /* visual clutter... */
+        int sky;
+        int beach;
+        float sea;
     };
 }
 
 namespace foo
 {
-    class Bar : public test::Person
+    /* this class uses the struct-chain, where we have to rename stuff */
+    class Bar
     {
         public:
-            Bar(test::Person* parent);
-            virtual int getVar(int mVar);
+            Bar();
+            virtual int getSkyColor(int param);
 
         private:
-            test::Person* mParent;
-            int mBase;
+            int tap;
 
-            int getId() { return test.mBase.mId; };
+            /* one of the occurences of "oak" -- has o be replaced */
+            int getLeafs() { return earth.oak.leaf; };
 
-            struct repretest::blupp test;
+            /* here, nothing should match */
+            struct plotz::planet earth;
     };
 }
 
