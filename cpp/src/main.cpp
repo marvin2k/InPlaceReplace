@@ -36,18 +36,18 @@ class ClassRenamer : public MatchFinder::MatchCallback
             }
         }
 
-            {
-                const Expr *D = Result.Nodes.getNodeAs<Expr>("usage");
-                if (D) {
-                    std::cout << "got usage " << D->getExprLoc().printToString(*Result.SourceManager) << "\n";
-                    /* Replace->insert(Replacement( */
-                    /*             *Result.SourceManager, */
-                    /*             CharSourceRange::getTokenRange( */
-                    /*                 SourceRange(D->getExprLoc())), */
-                    /*             "usage")); */
-                }
+        {
+            const DeclRefExpr *D = Result.Nodes.getNodeAs<DeclRefExpr>("reference");
+            if (D) {
+                std::cout << "got reference " << D->getLocStart().printToString(*Result.SourceManager) << "\n";
+                /* Replace->insert(Replacement( */
+                /*             *Result.SourceManager, */
+                /*             CharSourceRange::getTokenRange( */
+                /*                 SourceRange(D->getExprLoc())), */
+                /*             "usage")); */
             }
         }
+    }
 };
 
 
@@ -64,27 +64,18 @@ int main(int argc, char **argv)
     RefactoringTool Tool(*Compilations, SourcePaths);
 
 
+    DeclarationMatcher matcher = fieldDecl(hasName("mBase"), hasType(recordDecl(hasName("blabla"))));
+
     MatchFinder Finder;
     ClassRenamer CallCallback(&Tool.getReplacements());
     // wanna have "the one and only" declaration of the "struct blabla" named mBase, anywhere, no
     // matter where...
-        Finder.addMatcher(
-            id("declaration",decl(
-                    fieldDecl(hasName("mBase")),
-                    fieldDecl(hasType(recordDecl(hasName("blabla"))))
-                    )
-                ),
+    Finder.addMatcher(fieldDecl(matcher).bind("declaration"),
             &CallCallback
             );
-    // wanna have each usage of the "mBase" string, if its of the "struct blabla"
-    // kinda works, one too many aswell... the "struct blupp" declaration...
-        Finder.addMatcher(
-            id("usage",expr(
-                    hasType(recordDecl(hasName("repretest::blabla"))))
-                ),
+    Finder.addMatcher(declRefExpr(to(matcher)).bind("reference"),
             &CallCallback
             );
-
 
     return Tool.run(newFrontendActionFactory(&Finder));
 }
