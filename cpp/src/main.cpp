@@ -36,18 +36,18 @@ class ClassRenamer : public MatchFinder::MatchCallback
             }
         }
 
-        {
-            const MemberExpr *D = Result.Nodes.getNodeAs<MemberExpr>("reference");
-            if (D) {
-                std::cout << "got reference " << D->getLocStart().printToString(*Result.SourceManager) << "\n";
-                /* Replace->insert(Replacement( */
-                /*             *Result.SourceManager, */
-                /*             CharSourceRange::getTokenRange( */
-                /*                 SourceRange(D->getExprLoc())), */
-                /*             "usage")); */
+            {
+                const MemberExpr *D = Result.Nodes.getNodeAs<MemberExpr>("reference");
+                if (D) {
+                    std::cout << "got reference " << D->getLocStart().printToString(*Result.SourceManager) << "\n";
+                    /* Replace->insert(Replacement( */
+                    /*             *Result.SourceManager, */
+                    /*             CharSourceRange::getTokenRange( */
+                    /*                 SourceRange(D->getExprLoc())), */
+                    /*             "usage")); */
+                }
             }
         }
-    }
 };
 
 
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
     Finder.addMatcher(fieldDecl(matcher).bind("declaration"),
             &CallCallback
             );
-    Finder.addMatcher(declRefExpr(to(matcher)).bind("reference"),
+    Finder.addMatcher(memberExpr(member(matcher)).bind("reference"),
             &CallCallback
             );
 
