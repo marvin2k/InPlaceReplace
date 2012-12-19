@@ -4,8 +4,8 @@
 
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
-#include "clang/Tooling/CompilationDatabase.h"
 #include "clang/Tooling/Refactoring.h"
+#include "clang/Tooling/CommonOptionsParser.h"
 #include "llvm/Support/CommandLine.h"
 
 using namespace clang;
@@ -13,9 +13,10 @@ using namespace clang::ast_matchers;
 using namespace clang::tooling;
 using namespace llvm;
 
-cl::opt<std::string> BuildPath(cl::Positional, cl::desc("<build-path>"));
-cl::list<std::string> SourcePaths(cl::Positional, cl::desc("<source0> [... <sourceN>]"), cl::OneOrMore);
-
+static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
+static cl::extrahelp MoreHelp(
+        "\t this is the private help for the InPlaceReplace tool\n"
+);
 
 class ClassRenamer : public MatchFinder::MatchCallback
 {
@@ -53,19 +54,15 @@ class ClassRenamer : public MatchFinder::MatchCallback
 };
 
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
-    cl::ParseCommandLineOptions(argc, argv);
+    /* the common-options parser provides the basic options: "-p<buildir>" and "sources" are the
+     * more important ones. see "$0 --help" for more details.
+     * see $HOME/llvm.git/tools/clang/tools/clang-check/ClangCheck.cpp */
+    CommonOptionsParser OptionsParser(argc, argv);
+    RefactoringTool Tool(OptionsParser.GetCompilations(), OptionsParser.GetSourcePathList());
 
-    std::string ErrorMessage;
-    OwningPtr<CompilationDatabase> Compilations(CompilationDatabase::loadFromDirectory(BuildPath, ErrorMessage));
-
-    if (!Compilations)
-        report_fatal_error(ErrorMessage);
-
-    RefactoringTool Tool(*Compilations, SourcePaths);
-
-    // a matcher to find a thing of type "tree" named "oak"
+    // a matcher to find a thing of type "tree" named "oak", to be reused
     DeclarationMatcher matcher = fieldDecl(hasName("oak"), hasType(recordDecl(hasName("plotz::tree"))));
 
     MatchFinder Finder;

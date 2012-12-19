@@ -13,7 +13,7 @@ InPlaceReplace:
 # we care to reset the test-dir, call the InPlaceReplace binary and display the diff
 # attention, ugly hack using wildcard there...
 execute: ${VICTIM} restore
-	./InPlaceReplace/InPlaceReplace ${VICTIM}/build/* ${VICTIM}/src/bar.cpp
+	./InPlaceReplace/InPlaceReplace -p ${VICTIM}/build/* ${VICTIM}/src/bar.cpp
 	git diff ${VICTIM}
 
 ${VICTIM}:
