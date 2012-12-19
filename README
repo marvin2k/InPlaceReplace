@@ -10,6 +10,7 @@ to come.
 
 for more details, look here http://clang.llvm.org/docs/LibASTMatchersReference.html
 also the "clang-tools-extra" git-repository is good to know.
+see also this collection of tutorials: https://github.com/loarabia/Clang-tutorial
 
 usage
 -----
@@ -38,14 +39,12 @@ to prepare the whole library infrastructure apply these commands:
 
 {{{
     git clone http://llvm.org/git/llvm.git $HOME/llvm.git
-    cd $HOME/llvm.git && git checkout -b clang_complete_32 5cd95e1
     git clone http://llvm.org/git/clang.git $HOME/llvm.git/tools/clang
-    cd $HOME/llvm.git/tools/clang && git checkout -b clang_complete_32 9903e94
     git clone http://llvm.org/git/clang-tools-extra.git $HOME/llvm.git/tools/clang/tools/extra
     mkdir -p $HOME/llvm.git/build && cd $HOME/llvm.git/build
     ../configure --prefix=$HOME/llvm.install --enable-optimized --disable-assertions --enable-targets=host-only
 
-    make -j`getconf _NPROCESSORS_ONLN` install
+    make -j`getconf _NPROCESSORS_ONLN` check-all install
 }}}
 
 source the file env.sh to even compile using clang
