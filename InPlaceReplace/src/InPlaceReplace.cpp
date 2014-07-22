@@ -22,14 +22,15 @@ class ClassRenamer : public MatchFinder::MatchCallback
 {
     Replacements *Replace;
     public:
-    ClassRenamer(Replacements *_Replace) : Replace(_Replace) {}
+    ClassRenamer(Replacements *Replace) : Replace(Replace) {}
     virtual void run(const MatchFinder::MatchResult &Result)
     {
         {
-            const Decl *D = Result.Nodes.getNodeAs<Decl>("declaration");
+            const FieldDecl *D = Result.Nodes.getNodeAs<FieldDecl>("declaration");
             if (D) {
-                    std::cout << "got declaration "
-                              << D->getLocation().printToString(*Result.SourceManager) << "\n";
+                std::cout << "got declaration: "
+                    << D->getLocation().printToString(*Result.SourceManager) << "\n";
+
                 Replace->insert(Replacement(
                             *Result.SourceManager,
                             CharSourceRange::getTokenRange(
@@ -41,8 +42,9 @@ class ClassRenamer : public MatchFinder::MatchCallback
         {
             const MemberExpr *D = Result.Nodes.getNodeAs<MemberExpr>("reference");
             if (D) {
-                std::cout << "got reference "
+                std::cout << "got reference: "
                     << D->getLocStart().printToString(*Result.SourceManager) << "\n";
+
                 Replace->insert(Replacement(
                             *Result.SourceManager,
                             CharSourceRange::getTokenRange(
