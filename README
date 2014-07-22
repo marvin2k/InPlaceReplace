@@ -53,13 +53,6 @@ To prepare the whole library infrastructure apply these commands:
 
 In your shell, source the file env.sh to even compile using clang
 
-Python
-======
-
-There are relicts in the directory "python". Scripts which worked for basic
-showcases (renaming a namespace and a variable) but it lacked a nice access to
-the actually useful stuff. They are there as a record.
-
 Tipps
 =====
 
@@ -68,9 +61,3 @@ This nitpick might be sometimes helpful:
 {{{
     $ clang-check -ast-dump -ast-dump-filter plotz::tree -p UseCase/build/x86_64-unknown-linux-gnu UseCase/src/bar.cpp
 }}}
-
-Some people claim that when the llvm/clang tree was compiled with runtime-debug
-(configure switch --enable-debug-runtime?), there exists also the
-"-ast-dump-xml" option, which has more human-friendly output. Doing a
-debug-build is up to 10 times slower than doing a normal build... and it didn't
-validate on a quick try...
