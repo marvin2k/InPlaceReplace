@@ -60,7 +60,7 @@ int main(int argc, const char **argv)
      * more important ones. see "$0 --help" for more details.
      * see $HOME/llvm.git/tools/clang/tools/clang-check/ClangCheck.cpp */
     CommonOptionsParser OptionsParser(argc, argv);
-    RefactoringTool Tool(OptionsParser.GetCompilations(), OptionsParser.GetSourcePathList());
+    RefactoringTool Tool(OptionsParser.getCompilations(), OptionsParser.getSourcePathList());
 
     // a matcher to find a thing of type "tree" named "oak", to be reused
     DeclarationMatcher matcher = fieldDecl(hasName("oak"), hasType(recordDecl(hasName("plotz::tree"))));
@@ -77,5 +77,5 @@ int main(int argc, const char **argv)
             &CallCallback
             );
 
-    return Tool.run(newFrontendActionFactory(&Finder));
+    return Tool.runAndSave(newFrontendActionFactory(&Finder));
 }
