@@ -39,14 +39,24 @@ For more targets see in the Makefile
 LLVM/clang setup
 ================
 
+the current HEAD is tested against llvm+clang-3.3 from Debian stable. Using your
+own compilation is not tested...
+
+roll-your-own
+-------------
+
 To prepare the whole library infrastructure apply these commands:
 
 {{{
-    git clone http://llvm.org/git/llvm.git $HOME/llvm.git
-    git clone http://llvm.org/git/clang.git $HOME/llvm.git/tools/clang
-    git clone http://llvm.org/git/clang-tools-extra.git $HOME/llvm.git/tools/clang/tools/extra
-    mkdir -p $HOME/llvm.git/build && cd $HOME/llvm.git/build
-    ../configure --prefix=$HOME/llvm.install --enable-optimized --disable-assertions --enable-targets=host-only
+    BRANCH=release_33
+    git clone http://llvm.org/git/llvm.git $HOME/llvm.git --branch $BRANCH
+    git clone http://llvm.org/git/clang.git $HOME/llvm.git/tools/clang --branch $BRANCH
+    git clone http://llvm.org/git/clang-tools-extra.git $HOME/llvm.git/tools/clang/tools/extra --branch $BRANCH
+    mkdir -p $HOME/llvm.git/build_cmake && cd $HOME/llvm.git/build_cmake
+    cmake .. \
+            -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON \
+            -DCMAKE_INSTALL_PREFIX:PATH="$HOME/llvm.install \
+            -DCMAKE_BUILD_TYPE="Release"
 
     make -j`getconf _NPROCESSORS_ONLN` check-all install
 }}}
