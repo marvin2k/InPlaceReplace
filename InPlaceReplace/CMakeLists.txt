@@ -30,30 +30,3 @@ target_link_libraries(${PROJECT_NAME}
 add_custom_target(${PROJECT_NAME}-lazy-symlink ALL ln --force -s ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME} ${CMAKE_SOURCE_DIR}/${PROJECT_NAME} DEPENDS ${PROJECT_NAME})
 # and clean this up if someone asks us to do so
 set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES ${CMAKE_SOURCE_DIR}/${PROJECT_NAME})
-
-
-
-
-
-
-
-
-
-
-
-# PRIVATE
-# create a .clang_complete -- used by a cool vim plugin
-file(REMOVE ${PROJECT_SOURCE_DIR}/.clang_complete)
-get_property(incdirs DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-file(APPEND ${PROJECT_SOURCE_DIR}/.clang_complete "-x c++\n")
-foreach(loopvar ${incdirs})
-    set(Iline "-I" ${loopvar} "\n")
-    file(APPEND ${PROJECT_SOURCE_DIR}/.clang_complete ${Iline} )
-endforeach(loopvar)
-get_property(defines DIRECTORY ${subdir} PROPERTY COMPILE_DEFINITIONS)
-foreach(loopvar ${defines})
-    set(Dline "-D" ${loopvar} "\n")
-    file(APPEND ${PROJECT_SOURCE_DIR}/.clang_complete ${Dline} )
-endforeach(loopvar)
-# and clean up the mess inside the .clang_complete
-execute_process(COMMAND sort -u ${PROJECT_SOURCE_DIR}/.clang_complete -o ${PROJECT_SOURCE_DIR}/.clang_complete)
